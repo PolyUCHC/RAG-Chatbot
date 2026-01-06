@@ -160,6 +160,10 @@ These folders are typically large or generated at runtime:
 - `chroma_dbs/` (vector store)
 - `__pycache__/`
 
+---
+
+# 📜 License
+MIT License. See `LICENSE`.
 
 
 
