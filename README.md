@@ -152,7 +152,7 @@ POPPLER_PATH=.\poppler-25.12.0\Library\bin
 
 ---
 
-# 🧼 GitHub Notes (What NOT to commit)
+# 🧼 GitHub Notes
 These folders are typically large or generated at runtime:
 - `bge-large-zh-v1.5/` (embedding model)
 - `poppler-25.12.0/` (binaries)
@@ -160,10 +160,6 @@ These folders are typically large or generated at runtime:
 - `chroma_dbs/` (vector store)
 - `__pycache__/`
 
----
-
-# 📜 License
-MIT License. See `LICENSE`.
 
 
 
