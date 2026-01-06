@@ -1,1 +1,177 @@
-# RAG-Chatbot
+# PDF RAG Chatbot (FastAPI + Chroma + Ollama)
+
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-ready-009688)](https://fastapi.tiangolo.com/)
+[![License](https://img.shields.io/badge/License-MIT-informational)](#license)
+
+Upload a PDF → index it into a local vector store → ask questions with grounded context.
+
+---
+
+## ✨ Highlights
+
+- **Simple flow**: Upload → Index → Chat
+- **Local-first**: embeddings from a local HuggingFace model folder, answers from **Ollama**
+- **Fast retrieval**: **ChromaDB** vector store (persisted on disk)
+- **Optional OCR** for scanned PDFs (Tesseract + Poppler)
+- **Clean UI**: sidebar actions + full-height chat
+
+---
+
+## 🧱 Tech Stack
+
+- Backend: **FastAPI**
+- Vector store: **ChromaDB**
+- Embeddings: **HuggingFace embeddings** (local folder)
+- LLM: **Ollama**
+- PDF loading: **PyMuPDF**
+- Frontend: static HTML + JS + CSS (served by FastAPI)
+
+---
+
+## 📁 Project Structure
+
+```text
+.
+├─ app.py                 # FastAPI backend (if yours is named "app", rename to app.py)
+├─ static/                # Frontend
+│  ├─ index.html
+│  ├─ app.js
+│  └─ style.css
+├─ requirements.txt
+├─ requirements-ocr.txt   # optional
+├─ .env.example
+└─ .gitignore
+```
+
+---
+
+
+## 🚀 Quickstart
+
+### 1) Python deps
+```
+pip install -r requirements.txt
+```
+
+### 2) Ollama
+
+Install Ollama, pull your model, and ensure Ollama is running.
+Set `OLLAMA_MODEL` if you use a different model.
+```
+ollama pull deepseek-r1:14b
+```
+
+### 3) Configure environment
+
+Copy `.env.example` → `.env`, then set the local embedding folder path:
+```
+EMBED_MODEL_PATH=./bge-large-zh-v1.5
+OLLAMA_MODEL=deepseek-r1:14b
+```
+
+### 4) Optional OCR (for scanned PDFs)
+
+Install:
+- Tesseract (and language data)
+- Poppler (pdftoppm)
+Then:
+```
+pip install -r requirements-ocr.txt
+```
+Run:
+```
+uvicorn app:app --reload --port 8000
+```
+Open:
+- `http://127.0.0.1:8000/`
+
+---
+
+## ⚙️ Configuration
+
+### Create a `.env` file (see `.env.example`):
+| Variable           | Purpose                              | Example                                        |
+| ------------------ | ------------------------------------ | ---------------------------------------------- |
+| `EMBED_MODEL_PATH` | Path to local embedding model folder | `./bge-large-zh-v1.5`                          |
+| `OLLAMA_MODEL`     | Ollama model name                    | `deepseek-r1:14b`                              |
+| `CHUNK_SIZE`       | Text chunk size                      | `600`                                          |
+| `CHUNK_OVERLAP`    | Chunk overlap                        | `100`                                          |
+| `TOP_K`            | Retrieved chunks per query           | `5`                                            |
+| `OCR_LANG`         | Tesseract language                   | `chi_tra`                                      |
+| `OCR_DPI`          | PDF raster DPI                       | `200`                                          |
+| `POPPLER_PATH`     | Poppler bin path (if needed)         | `./poppler-25.12.0/Library/bin`                |
+| `TESSERACT_CMD`    | Path to `tesseract.exe` (Windows)    | `C:\Program Files\Tesseract-OCR\tesseract.exe` |
+| `TESSDATA_PREFIX`  | Path to tessdata folder (Windows)    | `C:\Program Files\Tesseract-OCR\tessdata`      |
+
+---
+
+## 🔌 API Endpoints
+
+| Method | Path      | What it does                                      |
+| ------ | --------- | ------------------------------------------------- |
+| `POST` | `/upload` | Upload PDF and build an index                     |
+| `POST` | `/chat`   | Ask a question using retrieved context            |
+| `POST` | `/clear`  | Clear chat + remove current uploaded/indexed data |
+| `GET`  | `/`       | Frontend page                                     |
+
+---
+
+## 🧠 How it works (at a glance)
+
+``` text
+PDF → (PyMuPDF) text extraction
+   → split into chunks
+   → embed chunks (HF embeddings from local folder)
+   → store vectors (Chroma on disk)
+Query → retrieve Top-K chunks
+     → send context + question to Ollama
+     → return answer
+```
+
+---
+
+## 🧾 OCR (Optional for scanned PDFs)
+
+If your PDFs are image-only (scanned), OCR is needed.
+1) Install OCR Python deps:
+```
+pip install -r requirements-ocr.txt
+```
+
+2) Install system tools:
+- Tesseract (with Chinese language packs if needed)
+- Poppler (for `pdftoppm` used by `pdf2image`)
+
+3) Set env vars if required (Windows commonly needs these):
+```
+TESSERACT_CMD=C:\Program Files\Tesseract-OCR\tesseract.exe
+TESSDATA_PREFIX=C:\Program Files\Tesseract-OCR\tessdata
+POPPLER_PATH=.\poppler-25.12.0\Library\bin
+```
+
+---
+
+# 🧼 GitHub Notes (What NOT to commit)
+These folders are typically large or generated at runtime:
+- `bge-large-zh-v1.5/` (embedding model)
+- `poppler-25.12.0/` (binaries)
+- `uploads/` (user files)
+- `chroma_dbs/` (vector store)
+- `__pycache__/`
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
