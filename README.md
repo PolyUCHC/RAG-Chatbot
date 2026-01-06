@@ -6,6 +6,17 @@
 
 Upload a PDF → index it into a local vector store → ask questions with grounded context.
 
+## UI
+![App Screenshot](docs/screenshot.png)
+
+## Upload
+
+![Upload & Reindex](docs/screenshot_upload.png)
+
+## Chat
+
+![Chat & Sources](docs/screenshot_chat.png)
+
 ---
 
 ## ✨ Highlights
