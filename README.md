@@ -7,7 +7,7 @@
 Upload a PDF → index it into a local vector store → ask questions with grounded context.
 
 ## UI
-![App Screenshot](docs/screenshot.png)
+![App Screenshot](docs/screenshot_ui.png)
 
 ## Upload
 
